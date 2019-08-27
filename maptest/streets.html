@@ -1,0 +1,116 @@
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>bikes and peds</title>
+  <style>
+    html,
+    body,
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.10/esri/css/main.css">
+  <script src="https://js.arcgis.com/4.10/"></script>
+
+  <script>
+    require([
+      "esri/Map",
+      "esri/views/MapView",
+      //*** ADD ***//
+      "esri/tasks/support/Query",
+      "esri/tasks/QueryTask",
+      "esri/Graphic",
+      "dojo/domReady!"
+      //*** ADD ***//
+    ], function(Map, MapView, Query, QueryTask, Graphic) {
+
+    layer.popupTemplate = popupTemplate;
+       var map = new Map({
+         basemap: "satellite"
+       });
+
+       var view = new MapView({
+         container: "viewDiv",
+         map: map,
+         center: [-118.53, 34.20],
+         zoom: 13
+       });
+
+
+      //*** ADD ***//
+      // Define query SQL expression
+      var query = new Query();
+      query.outFields = ["OBJECTID"];
+      query.returnGeometry = true;
+
+      // Define the query task
+      var queryTask = new QueryTask({
+        url: "https://services1.arcgis.com/tp9wqSVX1AitKgjd/arcgis/rest/services/rsg20132018_gdb/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json"
+      });
+
+      // Execute the query
+      queryTask.execute(query)
+        .then(function(result) {
+          //console.log(result.features.length)
+
+          //*** ADD ***//
+          result.features.forEach(function(item) {
+            var g = new Graphic({
+              geometry: item.geometry,
+              attributes: item.attributes,
+              symbol: {
+                type: "simple-marker",
+                color: "orange",
+                size: "8px",
+              },
+
+              popupTemplate: {
+                title: "{OBJECTID}",
+                content: [{
+                  type: "fields"
+                }],
+                fieldInfos: [{
+                  fieldName: "accident_year",
+                  label: 'year',
+                  format: {
+                    dateFormat: 'year'
+                  }
+                }, {
+                  fieldName: "count_bicyclist_killed",
+                  format: {
+                    digitSeparator: true,
+                    places: 0
+                  }
+                }, {
+                  fieldName: "count_ped_killed",
+                  format: {
+                    digitSeparator: true,
+                    places: 0
+                  }
+                }]
+              }
+            });
+            view.graphics.add(g);
+          });
+
+        })
+
+        .otherwise(function(e) {
+          console.log(e);
+        });
+
+    });
+  </script>
+</head>
+
+<body>
+  <div id="viewDiv"></div>
+</body>
+
+</html>
