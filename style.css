@@ -1,7 +1,7 @@
 :root{
-    --bg: #ffeae2;
-    --text: black;
-    --sub: #2200ff;
+    --bg: #f9e2b0;
+    --text: 381a12;
+    --sub: #78b2bd;
 }
 
 
@@ -24,7 +24,7 @@ h1 {
   font-family: turnip, serif;
   font-weight: 700;
   font-style: normal;
-  color: #2200ff;
+  color: #ef6b2b;
   font-size: 110px;
   line-height: 105px;
   white-space: pre-line;
