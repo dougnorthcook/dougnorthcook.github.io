@@ -244,7 +244,7 @@ img::selection {
   max-height: 100%;
   flex-direction: column;
   justify-content: space-between;
-  width: 50px;
+  width: 100px;
   z-index: 1;
 }
 
